@@ -1,11 +1,21 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:weather_app/bloc/weather_bloc.dart';
+import 'package:weather_app/screens/home/inner_widget/home_icon_widget.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
 
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
@@ -60,197 +70,201 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
 
-              SizedBox(
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
-                child: SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "📍 Aix-en-provence",
-                        style: GoogleFonts.lato(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w300,
-                          fontSize: 12
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        "Good Morning",
-                        style: GoogleFonts.lato(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 24
-                        ),
-                      ),
-                  
-                      Image.asset("assets/images/1.png"),
-                      Center(
-                        child: Text(
-                          "21°C",
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.lato(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 32
-                          ),
-                        ),
-                      ),
-                      Center(
-                        child: Text(
-                          "THUNDERSTROM",
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.lato(
-                            color: Colors.white,
-                            fontWeight: FontWeight.normal,
-                            fontSize: 16
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Center(
-                        child: Text(
-                          "Firday 19 • 01:06pm",
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.lato(
-                            color: Colors.white,
-                            fontWeight: FontWeight.normal,
-                            fontSize: 12
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              BlocBuilder<WeatherBloc, WeatherState>(
+                builder: (context, state) {
+                  return state is WeatherSuccess ? SizedBox(
+                    height: MediaQuery.of(context).size.height,
+                    width: MediaQuery.of(context).size.width,
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // sunrise
-                          Row(
-                            children: [
-                              Image.asset("assets/images/11.png", scale: 10),
-                              const SizedBox(width: 8),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Sunrise",
-                                    style: GoogleFonts.lato(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.normal
-                                    ),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    "5:34 am",
-                                    style: GoogleFonts.lato(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w700
-                                    ),
-                                  ),
-                                ],
-                              )
-                            ],
+                          Text(
+                            "📍 ${state.weather.areaName}",
+                            style: GoogleFonts.lato(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w300,
+                              fontSize: 12
+                            ),
                           ),
-                  
-                          // sunset
-                          Row(
-                            children: [
-                              Image.asset("assets/images/12.png", scale: 10),
-                              const SizedBox(width: 8),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Sunset",
-                                    style: GoogleFonts.lato(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.normal
-                                    ),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    "6:22 pm",
-                                    style: GoogleFonts.lato(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w700
-                                    ),
-                                  ),
-                                ],
-                              )
-                            ],
-                          )
-                        ],
-                      ),
-                      
-                      const Padding(
-                        padding: EdgeInsetsDirectional.symmetric(vertical: 12),
-                        child: Divider(color: Colors.white10, height: 1),
-                      ),
-                  
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          // sunrise
-                          Row(
-                            children: [
-                              Image.asset("assets/images/13.png", scale: 10),
-                              const SizedBox(width: 8),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Temp Max",
-                                    style: GoogleFonts.lato(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.normal
-                                    ),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    "12°C",
-                                    style: GoogleFonts.lato(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w700
-                                    ),
-                                  ),
-                                ],
-                              )
-                            ],
+                          const SizedBox(height: 8),
+                          Text(
+                            "Good Morning",
+                            style: GoogleFonts.lato(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 24
+                            ),
                           ),
-                  
-                          // sunset
+                          HomeIconWidget(weatherCode: state.weather.weatherConditionCode ?? 0),
+                          Center(
+                            child: Text(
+                              "${state.weather.temperature!.celsius!.round()}°C",
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.lato(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 32
+                              ),
+                            ),
+                          ),
+                          Center(
+                            child: Text(
+                              state.weather.weatherMain.toString().toUpperCase(),
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.lato(
+                                color: Colors.white,
+                                fontWeight: FontWeight.normal,
+                                fontSize: 16
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Center(
+                            child: Text(
+                              DateFormat("EEEE dd • ").add_jm().format(state.weather.date!),
+                              //"Firday 19 • 01:06pm",
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.lato(
+                                color: Colors.white,
+                                fontWeight: FontWeight.normal,
+                                fontSize: 14
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 32),
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Image.asset("assets/images/14.png", scale: 10),
-                              const SizedBox(width: 8),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              // sunrise
+                              Row(
                                 children: [
-                                  Text(
-                                    "Temp Min",
-                                    style: GoogleFonts.lato(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.normal
-                                    ),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    "8°C",
-                                    style: GoogleFonts.lato(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w700
-                                    ),
-                                  ),
+                                  Image.asset("assets/images/11.png", scale: 10),
+                                  const SizedBox(width: 8),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Sunrise",
+                                        style: GoogleFonts.lato(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.normal
+                                        ),
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        DateFormat().add_jm().format(state.weather.sunrise!),
+                                        style: GoogleFonts.lato(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w700
+                                        ),
+                                      ),
+                                    ],
+                                  )
                                 ],
-                              )
-                            ],
-                          )
-                        ],
+                              ),
+                                
+                              // sunset
+                              Row(
+                                children: [
+                                  Image.asset("assets/images/12.png", scale: 10),
+                                  const SizedBox(width: 8),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Sunset",
+                                          style: GoogleFonts.lato(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.normal
+                                          ),
+                                        ),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          DateFormat().add_jm().format(state.weather.sunset!),
+                                          style: GoogleFonts.lato(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w700
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                )
+                              ],
+                            ),
+                                    
+                            const Padding(
+                              padding: EdgeInsetsDirectional.symmetric(vertical: 12),
+                              child: Divider(color: Colors.white10, height: 1),
+                            ),
+                                
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                // max temp
+                                Row(
+                                  children: [
+                                    Image.asset("assets/images/13.png", scale: 10),
+                                    const SizedBox(width: 8),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Temp Max",
+                                          style: GoogleFonts.lato(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.normal
+                                          ),
+                                        ),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          "${state.weather.tempMax!.celsius!.round()}°C",
+                                          style: GoogleFonts.lato(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w700
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                                
+                                // min temp
+                                Row(
+                                  children: [
+                                    Image.asset("assets/images/14.png", scale: 10),
+                                    const SizedBox(width: 8),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Temp Min",
+                                          style: GoogleFonts.lato(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.normal
+                                          ),
+                                        ),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          "${state.weather.tempMin!.celsius!.round()}°C",
+                                          style: GoogleFonts.lato(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w700
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                    ],
-                  ),
-                ),
+                    ) : Container();
+                },
               )
             ],
           ),
